@@ -237,6 +237,8 @@ namespace
         {
             BOOST_FAIL("no_transition called!");
         }
+    private:
+        player_& operator=(const player_&);
     };
     // Pick a back-end
     typedef msm::back::state_machine<player_> player;

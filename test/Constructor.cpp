@@ -187,7 +187,8 @@ namespace
             fsm.template get_state<player_::Paused&>().exit_counter=0;
             fsm.context_ = 20;
         }
-
+    private:
+        player_& operator=(const player_&);
     };
     // Pick a back-end
     typedef msm::back::state_machine<player_> player;
