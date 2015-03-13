@@ -13,6 +13,11 @@
 
 #include <boost/mpl/contains.hpp>
 
+#ifdef BOOST_MSVC
+# pragma warning(push)
+# pragma warning(disable: 4127) // conditional expression is constant
+#endif
+
 namespace boost { namespace msm { namespace back
 {
 
@@ -198,4 +203,9 @@ struct ShallowHistory
     };
 };
 } } }//boost::msm::back
+
+#ifdef BOOST_MSVC
+# pragma warning(pop)
+#endif
+
 #endif //BOOST_MSM_BACK_HISTORY_POLICIES_H
