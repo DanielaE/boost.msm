@@ -299,6 +299,8 @@ namespace boost { namespace msm { namespace front
             FCT()(evt_,fsm_,state_);
         }
         private:
+            Call& operator=(const Call&);
+
             EVT const&  evt_;
             FSM&        fsm_;
             STATE&      state_;
@@ -319,6 +321,8 @@ namespace boost { namespace msm { namespace front
             FCT()(evt_,fsm_,src_,tgt_);
         }
         private:
+            Call2& operator=(const Call2&);
+
             EVT const & evt_;
             FSM& fsm_;
             SourceState& src_;

@@ -82,6 +82,11 @@ BOOST_MPL_HAS_XXX_TRAIT_DEF(using_declared_table)
 #define BOOST_MSM_CONSTRUCTOR_ARG_SIZE 5 // default max number of arguments for constructors
 #endif
 
+#ifdef BOOST_MSVC
+# pragma warning(push)
+# pragma warning(disable: 4127) // conditional expression is constant
+#endif
+
 namespace boost { namespace msm { namespace back
 {
 // event used internally for wrapping a direct entry
@@ -94,6 +99,8 @@ struct direct_entry_event
 
     direct_entry_event(Event const& evt):m_event(evt){}
     Event const& m_event;
+private:
+    direct_entry_event& operator=(const direct_entry_event&);
 };
 
 // This declares the statically-initialized dispatch_table instance.
@@ -442,7 +449,8 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
-            // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
+            (void)state;
+           // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value && 
                 !is_exit_state_active<T1,get_owner<T1,library_sm> >(fsm))
             {
@@ -521,6 +529,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value && 
                 !is_exit_state_active<T1,get_owner<T1,library_sm> >(fsm))
@@ -584,6 +593,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
 
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value && 
@@ -650,6 +660,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
 
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value && 
@@ -701,6 +712,7 @@ private:
 
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             if (!check_guard(fsm,evt))
             {
                 // guard rejected the event, we stay in the current one
@@ -743,6 +755,7 @@ private:
         {
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             if (!check_guard(fsm,evt))
             {
                 // guard rejected the event, we stay in the current one
@@ -770,6 +783,7 @@ private:
         {
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
 
             // call the action method
             HandledEnum res = ROW::action_call(fsm,evt,
@@ -797,6 +811,7 @@ private:
         {
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             return HANDLED_TRUE;
         }
     };
@@ -1387,6 +1402,8 @@ private:
             // no state to serialize
         }
         Archive& ar_;
+    private:
+        serialize_state& operator=(const serialize_state&);
     };
     
     template<class Archive>
@@ -1560,6 +1577,8 @@ private:
          }
          int* const m_initial_states;
          int m_index;
+     private:
+         init_states& operator=(const init_states&);
      };
  public:
      struct update_state
@@ -1836,6 +1855,8 @@ private:
         }
 
     private:
+        handle_defer_helper& operator=(const handle_defer_helper&);
+
         deferred_msg_queue_helper<library_sm>&  events_queue;
         deferred_fct                            next_deferred_event;
     };
@@ -1922,6 +1943,8 @@ private:
         }
         library_sm*     self;
         HandledEnum&    result;
+    private:
+        region_processing_helper& operator=(const region_processing_helper&);
     };
     // version with visitors
     template <class StateType>
@@ -1968,6 +1991,8 @@ private:
 
         library_sm*     self;
         HandledEnum&    result;
+    private:
+        region_processing_helper& operator=(const region_processing_helper&);
     };
 
     // Main function used internally to make transitions
@@ -2085,6 +2110,8 @@ private:
             execute_entry(::boost::fusion::at_key<State>(self->m_substate_list),evt,*self);
         }
     private:
+        call_init& operator=(const call_init&);
+
         Event const& evt;
         library_sm* self;
     };
@@ -2429,6 +2456,8 @@ BOOST_PP_REPEAT(BOOST_PP_ADD(BOOST_MSM_VISITOR_ARG_SIZE,1), MSM_VISITOR_ARGS_EXE
              entry_exit_helper<Event,is_entry>::template helper< ::boost::mpl::bool_<is_entry>,State >();
          }
      private:
+         entry_exit_helper& operator=(const entry_exit_helper&);
+
          int            state_id;
          Event const&   evt;
          library_sm*    self;
@@ -2577,6 +2606,8 @@ BOOST_PP_REPEAT(BOOST_PP_ADD(BOOST_MSM_VISITOR_ARG_SIZE,1), MSM_VISITOR_ARGS_EXE
                  helper_self->m_states[find_region_id<typename StateType::wrapped_entry>::region_index] = state_id;
              }
          private:
+             fork_helper& operator=(const fork_helper&);
+
              library_sm*        helper_self;
              EventType const&   helper_evt;
          };
@@ -2839,5 +2870,10 @@ private:
 };
 
 } } }// boost::msm::back
+
+#ifdef BOOST_MSVC
+# pragma warning(pop)
+#endif
+
 #endif //BOOST_MSM_BACK_STATEMACHINE_H
 
