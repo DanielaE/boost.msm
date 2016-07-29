@@ -82,6 +82,11 @@ BOOST_MPL_HAS_XXX_TRAIT_DEF(event_queue_before_deferred_queue)
 #define BOOST_MSM_CONSTRUCTOR_ARG_SIZE 5 // default max number of arguments for constructors
 #endif
 
+#ifdef BOOST_MSVC
+# pragma warning(push)
+# pragma warning(disable: 4127) // conditional expression is constant
+#endif
+
 namespace boost { namespace msm { namespace back
 {
 // event used internally for wrapping a direct entry
@@ -443,6 +448,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value &&
                 !is_exit_state_active<T1,get_owner<T1,library_sm> >(fsm))
@@ -522,6 +528,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value &&
                 !is_exit_state_active<T1,get_owner<T1,library_sm> >(fsm))
@@ -585,6 +592,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
 
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value &&
@@ -651,6 +659,7 @@ private:
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_STATIC_CONSTANT(int, next_state = (get_state_id<stt,next_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
 
             // if T1 is an exit pseudo state, then take the transition only if the pseudo exit state is active
             if (has_pseudo_exit<T1>::type::value &&
@@ -702,6 +711,7 @@ private:
 
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             if (!check_guard(fsm,evt))
             {
                 // guard rejected the event, we stay in the current one
@@ -744,6 +754,7 @@ private:
         {
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             if (!check_guard(fsm,evt))
             {
                 // guard rejected the event, we stay in the current one
@@ -771,6 +782,7 @@ private:
         {
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
 
             // call the action method
             HandledEnum res = ROW::action_call(fsm,evt,
@@ -798,6 +810,7 @@ private:
         {
             BOOST_STATIC_CONSTANT(int, current_state = (get_state_id<stt,current_state_type>::type::value));
             BOOST_ASSERT(state == (current_state));
+            (void)state;
             return HANDLED_TRUE;
         }
     };
@@ -2925,4 +2938,9 @@ private:
 };
 
 } } }// boost::msm::back
+
+#ifdef BOOST_MSVC
+# pragma warning(pop)
+#endif
+
 #endif //BOOST_MSM_BACK_STATEMACHINE_H
